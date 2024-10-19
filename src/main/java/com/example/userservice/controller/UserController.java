@@ -3,8 +3,10 @@ package com.example.userservice.controller;
 
 import com.example.userservice.model.User;
 import com.example.userservice.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,5 +48,22 @@ public class UserController {
         Optional<User> user = userService.getUserByEmail(email);
         return user.map(ResponseEntity::ok)
                 .orElseGet(()->ResponseEntity.notFound().build());
+    }
+
+    // Обновление пользователя
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails, BindingResult result) {
+        if (result.hasErrors()) {
+            // Возвращение ответа с ошибками валидации
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        User updatedUser = userService.updateUser(id, userDetails);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // удаление пользователя
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
