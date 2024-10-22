@@ -51,6 +51,7 @@ public class UserController {
     }
 
     // Обновление пользователя
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails, BindingResult result) {
         if (result.hasErrors()) {
             // Возвращение ответа с ошибками валидации
@@ -61,7 +62,7 @@ public class UserController {
     }
 
     // удаление пользователя
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
